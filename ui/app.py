@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QMainWindow,QWidget,QPushButton,QVBoxLayout,QFormLay
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from models.core import register_user
-from theme import get_stylesheet
+from ui.theme import get_stylesheet
 
 class MainApp(QMainWindow):
     def __init__(self):
@@ -13,6 +13,8 @@ class MainApp(QMainWindow):
         self.register_window = None
 
         self.create_widgets()
+
+        self.load_stylesheet()
 
 
     def load_stylesheet(self):
@@ -79,13 +81,21 @@ class RegisterUser(QWidget):
 
         self.warning_label = QLabel("توجه: پر کردن تمام فیلد ها الزامی است")
         self.warning_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.warning_label.setFixedHeight(20)
+        self.warning_label.setFixedHeight(30)
 
         self.registery_layout.addWidget(self.warning_label)
         self.registery_layout.addLayout(self.registery_form)
         self.registery_layout.addWidget(self.submit_btn)
         
         self.setLayout(self.registery_layout)
+
+
+        self.setWindowIcon(QIcon("logo.ico"))
+        self.load_stylesheet()
+
+    def load_stylesheet(self):
+        qss_string = get_stylesheet(True) #change the True later
+        self.setStyleSheet(qss_string)
 
     def submit(self): #complete later
         pass

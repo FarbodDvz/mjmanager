@@ -1,7 +1,31 @@
-def get_stylesheet(is_dark_mode):
+def get_stylesheet(is_dark_mode): #app theme color: #de8509 Yellow
     if is_dark_mode:
         return """
-        
+        QMainWindow {
+        background-color:#000000;
+        color: #de8509;
+        font-size:16px;
+        }
+
+        QWidget {
+        background-color:#000000;
+        color:#de8509;
+        font-size:16px;
+        }
+
+        QPushButton {
+        background-color:#de8509;
+        color:#000000;
+        padding:5px 10px;
+        border-radius:8px;
+        font-size:14px;
+        font-weight:bold;
+        }
+        QPushButton:hover {
+        background-color:#1c1c1c;
+        color:#de8509;
+        }
+
         """
     
 
@@ -9,5 +33,29 @@ def get_stylesheet(is_dark_mode):
 
     else:
         return """
-        
+        QMainWindow {
+        background-color:#f0f0f0;
+        color: #1a0f00;
+        font-size:16px;
+        }
+
+        QWidget {
+        background-color:#f0f0f0;
+        color:#1a0f00;
+        font-size:16px;
+        }
+
+        QPushButton {
+        background-color:#cfcfcf;
+        color:#000000;
+        padding:5px 10px;
+        border:5px black;
+        border-radius:8px;
+        font-size:14px;
+        font-weight:bold;
+        }
+        QPushButton:hover {
+        background-color:#474747;
+        color:#de8509;
+        }
         """
