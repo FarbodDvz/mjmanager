@@ -1,7 +1,8 @@
-from PyQt6.QtWidgets import QMainWindow,QWidget,QPushButton,QVBoxLayout,QFormLayout,QLineEdit,QLabel
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon
-from models.core import register_user
+from PyQt6.QtWidgets import QMainWindow,QWidget,QPushButton,QVBoxLayout,QFormLayout,QLineEdit,QLabel,QDialog
+from PyQt6.QtWidgets import QTableWidget,QHeaderView,QHBoxLayout
+from PyQt6.QtCore import Qt,QSettings
+from PyQt6.QtGui import QIcon,QPixmap
+from models.core import register_user,add_log
 from ui.theme import get_stylesheet
 
 class MainApp(QMainWindow):
@@ -9,50 +10,120 @@ class MainApp(QMainWindow):
         super().__init__()
         self.setWindowTitle("Meysam Jonoub Manager")
         self.setWindowIcon(QIcon("logo.ico"))
+        self.resize(800,500)
+        self.setMinimumSize(700,400)
+        self.center_window()
 
         self.register_window = None
 
         self.create_widgets()
 
+
+        self.settings = QSettings("MJM","App")
         self.load_stylesheet()
 
 
+    def center_window(self):
+        screen = self.screen().availableGeometry()
+        size = self.geometry()
+        self.move(
+            (screen.width() - size.width()) //2,
+            (screen.height() - size.height()) //2
+        )
+
+
     def load_stylesheet(self):
-        qss_string = get_stylesheet(True) #change the True later
+        dark_theme = self.settings.value("dark_theme",True,type=bool)
+        qss_string = get_stylesheet(dark_theme)
         self.setStyleSheet(qss_string)
+        if dark_theme:
+            self.toggle_theme_btn.setText("🌑")
+        else:
+            self.toggle_theme_btn.setText("☀️")
 
     
     
     def create_widgets(self):
         self.main_widget = QWidget()
 
-        vertical_layout = QVBoxLayout()
+        main_layout = QVBoxLayout()
+        new_user_btn_layout = QHBoxLayout()
+        header_layout = QHBoxLayout()
+
+        self.logo_label = QLabel()
+        pixmap = QPixmap("logo.png")
+        self.logo_label.setPixmap(pixmap.scaled(
+            100,50,
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation
+        ))
+
+        self.logo_label.setMaximumHeight(100)
+        self.logo_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
 
         self.new_user_btn = QPushButton("عضویت جدید")
         self.new_user_btn.clicked.connect(self.register_user_window)
-        
-        vertical_layout.addWidget(self.new_user_btn)
 
-        self.main_widget.setLayout(vertical_layout)
+        self.toggle_theme_btn = QPushButton()
+        self.toggle_theme_btn.clicked.connect(self.toggle_theme)
+
+        self.log_table = QTableWidget()
+        self.log_table.setColumnCount(3)
+        self.log_table.setHorizontalHeaderLabels(["نام","زمان","وضعیت اشتراک"])
+        self.log_table.horizontalHeader().setStretchLastSection(True)
+        self.log_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.log_table.setSelectionMode(QTableWidget.SelectionMode.NoSelection)
+        self.log_table.verticalHeader().setVisible(False)
+        header = self.log_table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.log_table.setMinimumHeight(300)
+        self.log_table.setShowGrid(False)
+        self.log_table.setAlternatingRowColors(True)
+
+        header_layout.addWidget(self.logo_label)
+        header_layout.addStretch()
+        header_layout.addWidget(self.toggle_theme_btn)
+
+        new_user_btn_layout.addStretch()
+        new_user_btn_layout.addWidget(self.new_user_btn)
+        new_user_btn_layout.addStretch()
+        
+        main_layout.addLayout(header_layout)
+        main_layout.addLayout(new_user_btn_layout)
+        main_layout.addWidget(self.log_table)
+
+        main_layout.setContentsMargins(15,10,15,10)
+        main_layout.setSpacing(10)
+
+        self.main_widget.setLayout(main_layout)
         self.setCentralWidget(self.main_widget)
+
+    
+    def toggle_theme(self):
+        is_dark_theme = self.settings.value("dark_theme",True,type=bool)
+        if is_dark_theme:
+            self.settings.setValue("dark_theme",False)
+            self.toggle_theme_btn.setText("☀️")
+        else:
+            self.settings.setValue("dark_theme",True)
+            self.toggle_theme_btn.setText("🌑")
+        
+        self.load_stylesheet()
 
 
     def register_user_window(self):
-        if self.register_window is None:
-            self.register_window = RegisterUser()
-        
-        self.register_window.show()
-        self.register_window.raise_()
-        self.register_window.activateWindow()
+        dialog = RegisterUser(self.settings,parent=self)
+        dialog.exec()
 
 
 
 
 
 
-class RegisterUser(QWidget):
-    def __init__(self):
-        super().__init__()
+class RegisterUser(QDialog):
+    def __init__(self,settings,parent=None):
+        super().__init__(parent)
+        self.settings=settings
         self.setWindowTitle("ثبت نام عضو جدید")
 
         self.registery_layout = QVBoxLayout()
@@ -94,7 +165,7 @@ class RegisterUser(QWidget):
         self.load_stylesheet()
 
     def load_stylesheet(self):
-        qss_string = get_stylesheet(True) #change the True later
+        qss_string = get_stylesheet(self.settings.value("dark_theme",True,type=bool))
         self.setStyleSheet(qss_string)
 
     def submit(self): #complete later

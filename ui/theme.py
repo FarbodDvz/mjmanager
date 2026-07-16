@@ -1,5 +1,6 @@
-def get_stylesheet(is_dark_mode): #app theme color: #de8509 Yellow
-    if is_dark_mode:
+
+def get_stylesheet(is_dark_theme): #app theme color: #de8509 Yellow    
+    if is_dark_theme:
         return """
         QMainWindow {
         background-color:#000000;
