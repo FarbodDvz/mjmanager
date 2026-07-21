@@ -1,8 +1,9 @@
 from PyQt6.QtWidgets import QMainWindow,QWidget,QPushButton,QVBoxLayout,QFormLayout,QLineEdit,QLabel,QDialog
 from PyQt6.QtWidgets import QTableWidget,QHeaderView,QHBoxLayout
-from PyQt6.QtCore import Qt,QSettings
+from PyQt6.QtCore import Qt,QSettings,QTimer
 from PyQt6.QtGui import QIcon,QPixmap
 from models.core import register_user,add_log
+from models.utilities import update_clock
 from ui.theme import get_stylesheet
 
 class MainApp(QMainWindow):
@@ -42,14 +43,29 @@ class MainApp(QMainWindow):
             self.toggle_theme_btn.setText("☀️")
 
     
-    
+    def update_clock(self):
+        update_clock(self.clock_widget)
+
+
+
     def create_widgets(self):
         self.main_widget = QWidget()
 
-        main_layout = QVBoxLayout()
-        new_user_btn_layout = QHBoxLayout()
-        header_layout = QHBoxLayout()
 
+
+        #CREATE LAYOUTS
+        main_layout = QVBoxLayout()
+        header_hlayout = QHBoxLayout()
+        header_vlayout = QVBoxLayout()
+        clock_layout = QHBoxLayout()
+        buttons_layout = QVBoxLayout()
+        new_user_btn_layout = QHBoxLayout()
+        extend_membership_btn_layout = QHBoxLayout()
+        
+        
+
+
+        #CREATE WIDGETS
         self.logo_label = QLabel()
         pixmap = QPixmap("logo.png")
         self.logo_label.setPixmap(pixmap.scaled(
@@ -61,16 +77,51 @@ class MainApp(QMainWindow):
         self.logo_label.setMaximumHeight(100)
         self.logo_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
 
-        self.new_user_btn = QPushButton("عضویت جدید")
-        self.new_user_btn.clicked.connect(self.register_user_window)
+
+
+
+
+        self.device_status_label = QLabel()
+        self.device_status_label.setText("وضعیت دستگاه: نامشخص")
+
+
+
+
 
         self.toggle_theme_btn = QPushButton()
         self.toggle_theme_btn.clicked.connect(self.toggle_theme)
 
+
+
+
+        self.clock_widget = QLabel()
+        self.clock_widget.setObjectName("clocklabel")
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_clock)
+        self.timer.start(1000)
+        self.update_clock()
+
+
+
+
+
+        self.new_user_btn = QPushButton("عضویت جدید")
+        self.new_user_btn.clicked.connect(self.register_user_window)
+        self.new_user_btn.setFixedWidth(150)
+
+
+
+
+        self.extend_membership_btn = QPushButton("تمدید اشتراک عضو")
+        self.extend_membership_btn.setFixedWidth(150)
+
+
+
+
+
         self.log_table = QTableWidget()
         self.log_table.setColumnCount(3)
         self.log_table.setHorizontalHeaderLabels(["نام","زمان","وضعیت اشتراک"])
-        self.log_table.horizontalHeader().setStretchLastSection(True)
         self.log_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.log_table.setSelectionMode(QTableWidget.SelectionMode.NoSelection)
         self.log_table.verticalHeader().setVisible(False)
@@ -80,16 +131,43 @@ class MainApp(QMainWindow):
         self.log_table.setShowGrid(False)
         self.log_table.setAlternatingRowColors(True)
 
-        header_layout.addWidget(self.logo_label)
-        header_layout.addStretch()
-        header_layout.addWidget(self.toggle_theme_btn)
+
+
+
+
+        #ASSIGN WIDGETS TO LAYOUTS
+        header_hlayout.addWidget(self.logo_label)
+        header_hlayout.addStretch()
+        header_hlayout.addWidget(self.device_status_label)
+        header_hlayout.addStretch()
+        header_hlayout.addWidget(self.toggle_theme_btn)
+
+
+        clock_layout.addStretch()
+        clock_layout.addWidget(self.clock_widget)
+        clock_layout.addStretch()
+
+
+        header_vlayout.addLayout(header_hlayout)
+        header_vlayout.addLayout(clock_layout)
+
+
+        buttons_layout.addLayout(new_user_btn_layout)
+        buttons_layout.addLayout(extend_membership_btn_layout)
+
 
         new_user_btn_layout.addStretch()
         new_user_btn_layout.addWidget(self.new_user_btn)
         new_user_btn_layout.addStretch()
+
+
+        extend_membership_btn_layout.addStretch()
+        extend_membership_btn_layout.addWidget(self.extend_membership_btn)
+        extend_membership_btn_layout.addStretch()
+
         
-        main_layout.addLayout(header_layout)
-        main_layout.addLayout(new_user_btn_layout)
+        main_layout.addLayout(header_vlayout)
+        main_layout.addLayout(buttons_layout)
         main_layout.addWidget(self.log_table)
 
         main_layout.setContentsMargins(15,10,15,10)

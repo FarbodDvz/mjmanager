@@ -27,6 +27,11 @@ def get_stylesheet(is_dark_theme): #app theme color: #de8509 Yellow
         color:#de8509;
         }
 
+        QLabel#clocklabel{
+        font-weight:bold;
+        font-size:18px;   
+        }
+
         """
     
 
@@ -50,7 +55,7 @@ def get_stylesheet(is_dark_theme): #app theme color: #de8509 Yellow
         background-color:#cfcfcf;
         color:#000000;
         padding:5px 10px;
-        border:5px black;
+        border:1px solid black;
         border-radius:8px;
         font-size:14px;
         font-weight:bold;
@@ -58,5 +63,10 @@ def get_stylesheet(is_dark_theme): #app theme color: #de8509 Yellow
         QPushButton:hover {
         background-color:#474747;
         color:#de8509;
+        }
+
+        QLabel#clocklabel{
+        font-weight:bold;
+        font-size:18px;   
         }
         """
