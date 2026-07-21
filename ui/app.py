@@ -10,7 +10,7 @@ class MainApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Meysam Jonoub Manager")
-        self.setWindowIcon(QIcon("logo.ico"))
+        self.setWindowIcon(QIcon("assets/logo.ico"))
         self.resize(800,500)
         self.setMinimumSize(700,400)
         self.center_window()
@@ -67,7 +67,7 @@ class MainApp(QMainWindow):
 
         #CREATE WIDGETS
         self.logo_label = QLabel()
-        pixmap = QPixmap("logo.png")
+        pixmap = QPixmap("assets/logo.png")
         self.logo_label.setPixmap(pixmap.scaled(
             100,50,
             Qt.AspectRatioMode.KeepAspectRatio,
