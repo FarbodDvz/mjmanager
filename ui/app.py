@@ -114,6 +114,7 @@ class MainApp(QMainWindow):
 
         self.extend_membership_btn = QPushButton("تمدید اشتراک عضو")
         self.extend_membership_btn.setFixedWidth(150)
+        self.extend_membership_btn.clicked.connect(self.extend_membership_window)
 
 
 
@@ -192,4 +193,12 @@ class MainApp(QMainWindow):
     def register_user_window(self):
         from ui.register_user_window import RegisterUser
         dialog = RegisterUser(self.settings,parent=self)
+        dialog.exec()
+
+
+
+
+    def extend_membership_window(self):
+        from ui.extend_membership import ExtendMembership
+        dialog = ExtendMembership(self.settings,parent=self)
         dialog.exec()
