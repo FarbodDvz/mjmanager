@@ -1,6 +1,6 @@
 import sqlite3
 
-DB_NAME = "db/mjm.db"
+DB_NAME = ":memory:"
 
 def get_connection():
     conn = sqlite3.connect(DB_NAME)

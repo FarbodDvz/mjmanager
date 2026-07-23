@@ -1,8 +1,7 @@
 CREATE TABLE IF NOT EXISTS members (
-id INTEGER PRIMARY KEY AUTOINCREMENT,
+ncode INTEGER PRIMARY KEY,
 name TEXT NOT NULL,
 phone TEXT,
-fingerprint_id TEXT UNIQUE,
 join_date TEXT
 );
 

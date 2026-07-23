@@ -3,8 +3,9 @@ from PyQt6.QtWidgets import QTableWidget,QHeaderView,QHBoxLayout
 from PyQt6.QtCore import Qt,QSettings,QTimer
 from PyQt6.QtGui import QIcon,QPixmap
 from models.core import register_user,add_log
-from models.utilities import update_clock
+from models.utilities import update_clock,get_jmonth,update_date
 from ui.theme import get_stylesheet
+from jdatetime import date
 
 class MainApp(QMainWindow):
     def __init__(self):
@@ -45,6 +46,8 @@ class MainApp(QMainWindow):
     
     def update_clock(self):
         update_clock(self.clock_widget)
+        if self.clock_widget.text() == "00:00:00":
+            update_date(self.date_label)
 
 
 
@@ -57,6 +60,7 @@ class MainApp(QMainWindow):
         main_layout = QVBoxLayout()
         header_hlayout = QHBoxLayout()
         header_vlayout = QVBoxLayout()
+        date_layout = QHBoxLayout()
         clock_layout = QHBoxLayout()
         buttons_layout = QVBoxLayout()
         new_user_btn_layout = QHBoxLayout()
@@ -104,6 +108,13 @@ class MainApp(QMainWindow):
 
 
 
+        self.today = date.today()
+        date_label_info=f"امروز {self.today.day} {get_jmonth(self.today.month)} ماه سال {self.today.year}"
+        self.date_label = QLabel(date_label_info)
+
+
+
+
 
         self.new_user_btn = QPushButton("عضویت جدید")
         self.new_user_btn.clicked.connect(self.register_user_window)
@@ -144,12 +155,18 @@ class MainApp(QMainWindow):
         header_hlayout.addWidget(self.toggle_theme_btn)
 
 
+        date_layout.addStretch()
+        date_layout.addWidget(self.date_label)
+        date_layout.addStretch()
+
+
         clock_layout.addStretch()
         clock_layout.addWidget(self.clock_widget)
         clock_layout.addStretch()
 
 
         header_vlayout.addLayout(header_hlayout)
+        header_vlayout.addLayout(date_layout)
         header_vlayout.addLayout(clock_layout)
 
 
