@@ -33,6 +33,7 @@ class ExtendMembership(QDialog):
         #LAYOUTS
         main_layout = QVBoxLayout()
         search_bar_layout = QHBoxLayout()
+        info_label_layout = QHBoxLayout()
 
 
 
@@ -51,8 +52,7 @@ class ExtendMembership(QDialog):
         
         
         self.info_label = QLabel("<i>روی یک کاربر کلیک کنید</i>",self)
-        self.info_label.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self.info_label.setWordWrap(True)
+        self.info_label.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
 
 
 
@@ -72,11 +72,17 @@ class ExtendMembership(QDialog):
 
 
 
+        info_label_layout.addStretch()
+        info_label_layout.addWidget(self.info_label)
+        info_label_layout.addStretch()
+
+
+
 
 
         main_layout.addLayout(search_bar_layout)
         main_layout.addWidget(self.results_list)
-        main_layout.addWidget(self.info_label)
+        main_layout.addLayout(info_label_layout)
 
 
 
@@ -101,7 +107,7 @@ class ExtendMembership(QDialog):
     def perform_search(self):
         query = self.search_bar.text().strip().lower()
         self.results_list.clear()
-        self.info_label.setText("<i>Select a user to see details.</i>")
+        self.info_label.setText("<i>روی یک کاربر کلیک کنید</i>")
 
         if not query:
             return
@@ -111,14 +117,14 @@ class ExtendMembership(QDialog):
                 self.results_list.addItem(name)
 
         if self.results_list.count() == 0:
-            self.results_list.addItem("No users found.")
+            self.results_list.addItem("هیچ عضوی یافت نشد")
             self.results_list.item(0).setFlags(Qt.ItemFlag.NoItemFlags) 
 
 
 
 
-    def on_item_clicked(self,item):
-        name = item.text
+    def on_item_clicked(self,item): #change this later
+        name = item.text()
         if name in db:
             info = db[name]
             details = (f"<b>Name:</b> {name}<br>"
